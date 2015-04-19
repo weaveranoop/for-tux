@@ -1,0 +1,117 @@
+<!doctype html> 
+<html lang="en"> 
+<head> 
+    <meta charset="UTF-8" />
+    <title>Phaser - Making your first game, part 1</title>
+    <script type="text/javascript" src="phaser.min.js"></script>
+    <style type="text/css">
+        body {
+            margin: 0;
+        }
+    </style>
+</head>
+<body>
+
+<script type="text/javascript">
+
+var game = new Phaser.Game(800, 600, Phaser.AUTO, '', { preload: preload, create: create, update: update });
+
+function preload() {
+    game.load.image('mosaic', 'assets/mosaic1.png');
+    game.load.image('yes', 'assets/yes.png');
+    game.load.image('no', 'assets/no.png');
+}
+
+var yesButton; var noButton; var x; var y; var z;
+var text; var style; var question; var verdict;
+var scoreText; var score = 0;
+var colors = ['Yellow', 'Black', 'Green', 'Red', 'Blue'];
+var colorName = ['Yellow', 'Black', 'Green', 'Red', 'Blue'];
+
+
+function create() {
+
+    //  We're going to be using physics, so enable the Arcade Physics system
+    game.physics.startSystem(Phaser.Physics.ARCADE);
+
+    //  A simple background for our game
+    game.add.sprite(0, 0, 'mosaic');
+
+    yesButton = game.add.button(155, 470, 'yes', check);
+    
+    yesButton.input.useHandCursor = true;
+
+    noButton = game.add.button(400, 470, 'no', checkWrong);
+    
+    noButton.input.useHandCursor = true;
+
+    //Variables for generating random fill colors 
+    x = Math.floor( Math.random() * colors.length );
+    y = Math.floor( Math.random() * colors.length );
+
+    style = { font: 'bold 90pt Arial', fill: colorName[x], align: 'center',  wordWrap: true, wordWrapWidth: 450 };
+
+    text = game.add.text(413, game.world.centerY-30, colorName[y], style);
+
+    text.anchor.set(0.5);
+
+    // to make the main text fill or its name equal to the color name asked in the question 
+    z = Math.ceil(Math.random() * 100);
+    if (z%2==0) {
+        question= game.add.text(280, 420, 'The Color Is ' + colors[x], { fill: '#fff' });
+    }
+    else {
+        question = game.add.text(280, 420, 'The Color Is ' + colors[y], { fill: '#fff' });
+    }
+
+    scoreText = game.add.text(20, 20, 'Score: ' + score, { fill: '#fff' });
+}
+
+//Function to check the answer when clicked on 'Yes' button
+function check() {
+    if (z%2!=0 && colorName[x]==colors[y]) {
+        verdict = game.add.text(350, 20, 'Correct!', { fill: '#fff' });
+        score += 100;
+        scoreText.text = 'Score: ' + score;
+    }
+    else if (z%2==0 && colorName[x]==colors[x])
+    {
+        verdict = game.add.text(350, 20, 'Correct!', { fill: '#fff' });
+        score += 100;
+        scoreText.text = 'Score: ' + score;
+    }
+    else
+    {
+        verdict = game.add.text(350, 20, 'Wrong!', { fill: '#fff' });
+    }
+    
+    //setInterval(function(){location.reload();}, 500);
+    create();
+}
+
+//Function to check the answer when clicked on 'No' button
+function checkWrong() {
+    if (z%2!=0 && colorName[x]==colors[y]) {
+        verdict = game.add.text(350, 20, 'Wrong!', { fill: '#fff' });
+    }
+    else if (z%2==0 && colorName[x]==colors[x]) {
+        verdict = game.add.text(350, 20, 'Wrong!', { fill: '#fff' });
+    }
+    else {
+        verdict = game.add.text(350, 20, 'Correct!', { fill: '#fff' });
+        score += 100;
+        scoreText.text = 'Score: ' + score;
+    }
+    
+    //setInterval(function(){location.reload();}, 500);
+    create();
+}
+
+function update() {
+
+}
+
+</script>
+
+</body>
+</html>
